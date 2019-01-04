@@ -34,8 +34,8 @@
       pay_platform, platform_number, platform_status, 
       create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
-      #{payPlatform,jdbcType=INTEGER}, #{platformNumber,jdbcType=VARCHAR}, #{platformStatus,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{payPlatform,jdbcType=INTEGER}, #{platformNumber,jdbcType=VARCHAR}, #{platformStatus,jdbcType=VARCHAR},
+    now(), now())
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.castellan.pojo.PayInfo" >
     <!--
@@ -49,7 +49,7 @@
       platform_number = #{platformNumber,jdbcType=VARCHAR},
       platform_status = #{platformStatus,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

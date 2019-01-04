@@ -33,8 +33,8 @@
       quantity, checked, create_time, 
       update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
-      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{quantity,jdbcType=INTEGER}, #{checked,jdbcType=INTEGER}, now(),
+      now())
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.castellan.pojo.Cart" >
     <!--
@@ -47,7 +47,7 @@
       quantity = #{quantity,jdbcType=INTEGER},
       checked = #{checked,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

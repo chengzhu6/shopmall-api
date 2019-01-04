@@ -38,8 +38,8 @@
       update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
       #{productId,jdbcType=INTEGER}, #{productImage,jdbcType=VARCHAR}, #{currentUnitPrice,jdbcType=DECIMAL}, 
-      #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, now(),
+    now())
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.castellan.pojo.OrderItem" >
     <!--
@@ -55,7 +55,7 @@
       quantity = #{quantity,jdbcType=INTEGER},
       total_price = #{totalPrice,jdbcType=DECIMAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
