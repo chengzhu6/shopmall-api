@@ -2,7 +2,7 @@
 # 数据库jar包及配置
 db:
   mysql:
-  location: Z:/maven/LocalWareHouse/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar
+    location: Z:/maven/LocalWareHouse/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar
 
 # 数据库连接池配置
 spring:
