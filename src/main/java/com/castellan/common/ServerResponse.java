@@ -1,11 +1,18 @@
 package com.castellan.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.io.Serializable;
+
 /**
  *  一个高服用的返回对象，用于接收处理接口的返回。
  * @param <T>
  */
 
-public class ServerResponse <T>{
+// 目的是在序列化的时候如果有null，该key不会序列化
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL )
+public class ServerResponse <T> implements Serializable {
 
     private int status;
 
@@ -63,36 +70,38 @@ public class ServerResponse <T>{
 
 
     public static ServerResponse createBySuccess(){
-        return new ServerResponse(ResponseCode.SUCCESS);
+        return new ServerResponse(ResponseCode.SUCCESS.getCode());
     }
 
     public static <T> ServerResponse createBySuccess(T data){
-        return new ServerResponse(ResponseCode.SUCCESS, data);
+        return new ServerResponse(ResponseCode.SUCCESS.getCode(), data);
     }
 
     public static <T> ServerResponse<T> createBySuccessMessage(String msg){
-        return new ServerResponse<T>(ResponseCode.SUCCESS,msg);
+        return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(),msg);
     }
 
     public static <T> ServerResponse createBySuccess(T data, String msg){
-        return new ServerResponse(ResponseCode.SUCCESS, data, msg);
+        return new ServerResponse(ResponseCode.SUCCESS.getCode(), data, msg);
     }
 
 
     public static ServerResponse createByError(){
-        return new ServerResponse(ResponseCode.ERROR);
+        return new ServerResponse(ResponseCode.ERROR.getCode());
     }
 
     public static ServerResponse createByErrorMessage(String msg){
-        return new ServerResponse(ResponseCode.ERROR, msg);
+        return new ServerResponse(ResponseCode.ERROR.getCode(), msg);
     }
 
     public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode,String errorMessage){
         return new ServerResponse<T>(errorCode,errorMessage);
     }
 
+    // 序列化的时候忽略
+    @JsonIgnore
     public boolean isSuccess(){
-        return this.getStatus() == ResponseCode.SUCCESS;
+        return this.getStatus() == ResponseCode.SUCCESS.getCode();
     }
 
 }

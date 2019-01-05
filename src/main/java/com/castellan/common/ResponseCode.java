@@ -1,7 +1,28 @@
 package com.castellan.common;
 
-public class ResponseCode {
+public enum ResponseCode {
 
-    public static final int SUCCESS = 0;
-    public static final int ERROR = 100;
+    SUCCESS(0,"SUCCESS"),
+    NEED_LOGIN(10,"NEED_LOGIN"),
+    ERROR(100,"ERROR");
+
+
+    private final int code;
+
+    private final String desc;
+
+    ResponseCode(int code, String desc){
+        this.code = code;
+        this.desc = desc;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+
 }
