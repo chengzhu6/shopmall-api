@@ -8,6 +8,8 @@ public class Const {
 
     public static final String TYPE_EMAIL = "email";
 
+    public static final Integer ROOT_NODE = new Integer(0);
+
 
     public interface Role{
         Integer ROLE_CUSTUMER = 1;

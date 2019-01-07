@@ -26,4 +26,6 @@ public interface IUserService {
 
     ServerResponse<User> getUsers(int pageSize, int pageNum);
 
+    ServerResponse checkAdminRole(Integer role);
+
 }
