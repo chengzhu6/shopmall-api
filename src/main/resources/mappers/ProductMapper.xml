@@ -129,4 +129,20 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  <select id="selectProductByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
+    select 
+    <include refid="Base_Column_List"/>
+    from t_product
+    <where>
+      <if test="id != null" >
+        and id = #{id}
+      </if>
+      <if test="name != null" >
+        and name like #{name}
+      </if>
+    </where>
+    
+  </select>
 </mapper>

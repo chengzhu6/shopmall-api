@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -82,21 +84,28 @@ public class CategoryServiceImpl implements ICategoryService {
 
 
     public ServerResponse getChildernCategoryById(int categoryId){
-        Set<Category> categorySet = Sets.newHashSet();
-        getChildrenCategory(categorySet,categoryId);
-        return ServerResponse.createBySuccess(categorySet);
+        List<Category> categories = new ArrayList<>();
+        getChildrenCategory(categories,categoryId);
+
+
+        Set<Integer> integerSet = Sets.newHashSet();
+        Iterator<Category> iterator = categories.iterator();
+        while (iterator.hasNext()){
+            integerSet.add(iterator.next().getId());
+        }
+        return ServerResponse.createBySuccess(integerSet);
     }
 
-    private void getChildrenCategory(Set<Category> categorySet,int categoryId){
+    private List<Category>  getChildrenCategory(List<Category> categories,int categoryId){
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
         if (category != null){
-            categorySet.add(category);
+            categories.add(category);
         }
         List<Category> categoryList = categoryMapper.selectCategoryByParentId(categoryId);
         for (Category categoryItem: categoryList) {
-            getChildrenCategory(categorySet,categoryItem.getId());
+            getChildrenCategory(categories,categoryItem.getId());
         }
-        return ;
+        return categories;
 
     }
 }

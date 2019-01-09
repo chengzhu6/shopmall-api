@@ -12,7 +12,9 @@ import com.castellan.vo.ProductListVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.util.PropertiesUtil;
+
+import com.castellan.util.PropertiesUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,7 +113,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost("http://img.castellan.com/");
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.castellan.com/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());
@@ -145,6 +147,23 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setCreateTime(product.getCreateTime().toString());
         productDetailVo.setUpdateTime(product.getUpdateTime().toString());
         return productDetailVo;
+    }
+
+
+    public ServerResponse searchProduct(String productName,Integer productId,int pageNum,int pageSize){
+        PageHelper.startPage(pageNum,pageSize);
+        if (StringUtils.isNotBlank(productName)){
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+        List<Product> products = productMapper.selectProductByNameAndProductId(productId,productName);
+        List<ProductListVo> productListVos = new ArrayList<>(products.size());
+        for (Product productItem: products) {
+            productListVos.add(assembleProductListVo(productItem));
+        }
+        PageInfo pageInfo = new PageInfo(products);
+        pageInfo.setList(productListVos);
+
+        return ServerResponse.createBySuccess(pageInfo);
     }
 
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/back/admin/login.do" method="post">
+    <input type="text" name="username" />
+    <input type="password" name="password" />
+    <input type="submit" value="登录"/>
+</form>
+<form action="/back/product/upload.do" method="post" enctype="multipart/form-data">
+    <input type="file" name="upload_file"/>
+    <input type="submit" value="上传文件"/>
+</form>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.castellan.dao;
 
 import com.castellan.pojo.Product;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -49,4 +50,6 @@ public interface ProductMapper {
 
 
     int updateByPrimaryKeySelective(Product record);
+
+    List<Product> selectProductByNameAndProductId(@Param(value = "id") Integer id,@Param(value = "name") String name);
 }
