@@ -29,7 +29,9 @@ public class CategoryManageController {
 
     @RequestMapping(value = "add_category.do")
     @ResponseBody
-    public ServerResponse addCategory(HttpSession session, String categoryName,@RequestParam(value = "parentId",defaultValue = "0") int parentId){
+    public ServerResponse addCategory(HttpSession session,
+                                      String categoryName,
+                                      @RequestParam(value = "parentId",defaultValue = "0") int parentId){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");

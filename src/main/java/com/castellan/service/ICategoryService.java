@@ -1,6 +1,10 @@
 package com.castellan.service;
 
 import com.castellan.common.ServerResponse;
+import com.castellan.pojo.Category;
+
+import java.util.List;
+import java.util.Set;
 
 public interface ICategoryService {
 
@@ -10,6 +14,6 @@ public interface ICategoryService {
 
     ServerResponse getChildrenParallelCategory( int categoryId);
 
-    ServerResponse getChildernCategoryById(int categoryId);
+    ServerResponse<List<Integer>> getChildernCategoryById(int categoryId);
 
 }

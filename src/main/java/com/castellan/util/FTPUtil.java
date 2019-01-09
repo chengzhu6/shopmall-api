@@ -19,12 +19,62 @@ public class FTPUtil {
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
     private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
 
+    private String ip;
+    private int port;
+    private String user;
+    private String pwd;
+    private FTPClient ftpClient;
+
+
     public FTPUtil(String ip,int port,String user,String pwd){
         this.ip = ip;
         this.port = port;
         this.user = user;
         this.pwd = pwd;
     }
+
+
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public FTPClient getFtpClient() {
+        return ftpClient;
+    }
+
+    public void setFtpClient(FTPClient ftpClient) {
+        this.ftpClient = ftpClient;
+    }
+
     public static boolean uploadFile(List<File> fileList) throws IOException {
         FTPUtil ftpUtil = new FTPUtil(ftpIp,21,ftpUser,ftpPass);
 
@@ -75,61 +125,5 @@ public class FTPUtil {
             e.printStackTrace();
         }
         return isSuccess;
-    }
-
-
-
-
-
-
-
-
-
-
-
-    private String ip;
-    private int port;
-    private String user;
-    private String pwd;
-    private FTPClient ftpClient;
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
-
-    public FTPClient getFtpClient() {
-        return ftpClient;
-    }
-
-    public void setFtpClient(FTPClient ftpClient) {
-        this.ftpClient = ftpClient;
     }
 }

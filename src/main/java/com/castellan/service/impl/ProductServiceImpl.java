@@ -1,16 +1,20 @@
 package com.castellan.service.impl;
 
+import com.castellan.common.Const;
 import com.castellan.common.ResponseCode;
 import com.castellan.common.ServerResponse;
 import com.castellan.dao.CategoryMapper;
 import com.castellan.dao.ProductMapper;
 import com.castellan.pojo.Category;
 import com.castellan.pojo.Product;
+import com.castellan.service.ICategoryService;
 import com.castellan.service.IProductService;
 import com.castellan.vo.ProductDetailVo;
 import com.castellan.vo.ProductListVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 
 import com.castellan.util.PropertiesUtil;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Service("iProductService")
@@ -29,6 +34,9 @@ public class ProductServiceImpl implements IProductService {
     private ProductMapper productMapper;
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private ICategoryService iCategoryService;
 
 
     public ServerResponse saveOrUpdateProduct(Product product){
@@ -113,7 +121,7 @@ public class ProductServiceImpl implements IProductService {
         productListVo.setId(product.getId());
         productListVo.setName(product.getName());
         productListVo.setCategoryId(product.getCategoryId());
-        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.castellan.com/"));
+        productListVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://39.96.47.168/"));
         productListVo.setMainImage(product.getMainImage());
         productListVo.setPrice(product.getPrice());
         productListVo.setSubtitle(product.getSubtitle());
@@ -135,7 +143,7 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStatus(product.getStatus());
         productDetailVo.setStock(product.getStock());
 
-        productDetailVo.setImageHost("\"http://img.happymmall.com/\"");
+        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://39.96.47.168/"));
 
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         if(category == null){
@@ -148,6 +156,8 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setUpdateTime(product.getUpdateTime().toString());
         return productDetailVo;
     }
+
+
 
 
     public ServerResponse searchProduct(String productName,Integer productId,int pageNum,int pageSize){
@@ -165,5 +175,71 @@ public class ProductServiceImpl implements IProductService {
 
         return ServerResponse.createBySuccess(pageInfo);
     }
+
+
+
+    public ServerResponse getProductDetail(Integer productId){
+        if (productId == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_PARAMETER.getCode(),ResponseCode.ILLEGAL_PARAMETER.getDesc());
+        }
+
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (product == null){
+            return ServerResponse.createByErrorMessage("商品已下架或删除");
+        }
+        if (product.getStatus() != Const.ProductStatus.ON_SALE.getStatus()){
+            return ServerResponse.createByErrorMessage("商品已下架或删除");
+        }
+        ProductDetailVo productDetailVo = assembleProductDetailVo(product);
+        return ServerResponse.createBySuccess(productDetailVo);
+
+    }
+
+    public ServerResponse getProductsByKeywordCategory(String keyword,Integer categoryId,int pageNum,int pageSize,String orderBy){
+        if (StringUtils.isBlank(keyword) && categoryId == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_PARAMETER.getCode(),ResponseCode.ILLEGAL_PARAMETER.getDesc());
+        }
+        List<Integer> categoryIdList = Lists.newArrayList();
+        if (categoryId != null){
+            Category category = categoryMapper.selectByPrimaryKey(categoryId);
+            if (category == null && StringUtils.isBlank(keyword)){
+                PageHelper.startPage(pageNum,pageSize);
+                List<ProductListVo> productListVoList = Lists.newArrayList();
+                PageInfo pageInfo = new PageInfo(productListVoList);
+                return ServerResponse.createBySuccess(pageInfo);
+            }
+            categoryIdList = iCategoryService.getChildernCategoryById(categoryId).getData();
+
+        }
+
+        if (StringUtils.isNotBlank(keyword)){
+            keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
+        }
+
+
+
+        PageHelper.startPage(pageNum,pageSize);
+        if (orderBy != null){
+            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+                String[] orderBys = orderBy.split("_");
+                PageHelper.orderBy(orderBys[0]+" "+orderBys[1]);
+            }
+        }
+
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(StringUtils.isBlank(keyword)?null:keyword,
+                                                                                categoryIdList.size()==0?null:categoryIdList);
+
+        List<ProductListVo> productListVos = new ArrayList<>(productList.size());
+        for (Product productItem: productList) {
+            productListVos.add(assembleProductListVo(productItem));
+        }
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVos);
+
+        return ServerResponse.createBySuccess(pageInfo);
+
+
+    }
+
 
 }

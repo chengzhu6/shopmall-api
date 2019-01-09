@@ -5,15 +5,44 @@
     <title>Title</title>
 </head>
 <body>
+<script>
+    function login(){
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange=function()
+    {
+    if (xhr.readyState==4 && xhr.status==200)
+    {
+    document.getElementById("status").innerHTML=xhr.responseText;
+    }
+    }
+    xhr.open("POST","/back/admin/login.do",true);
+    var data = "username=" + username + "&password=" +password;
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.send(data);
+    }
+
+
+</script>
 <form action="/back/admin/login.do" method="post">
-    <input type="text" name="username" />
-    <input type="password" name="password" />
-    <input type="submit" value="登录"/>
+    <input type="text" name="username" id="username" />
+    <input type="password" name="password" id="password" />
+    <input type="button" value="登录" onclick="login()"/>
+    <h5 id="status">未登录</h5>
 </form>
 <form action="/back/product/upload.do" method="post" enctype="multipart/form-data">
     <input type="file" name="upload_file"/>
     <input type="submit" value="上传文件"/>
 </form>
+
+
+<form action="/back/product/richtext_img_upload.do" method="post" enctype="multipart/form-data">
+    <input type="file" name="upload_file"/>
+    <input type="submit" value="上传文件"/>
+</form>
+
+
 
 </body>
 </html>

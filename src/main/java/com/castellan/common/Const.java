@@ -1,5 +1,9 @@
 package com.castellan.common;
 
+import com.google.common.collect.Sets;
+
+import java.util.Set;
+
 public class Const {
 
     public static final String CURRENT_USER = "currentUser";
@@ -14,5 +18,38 @@ public class Const {
     public interface Role{
         Integer ROLE_CUSTUMER = 1;
         Integer ROLE_ADMIN = 0;
+    }
+
+    public interface ProductListOrderBy{
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
+    }
+
+    public enum ProductStatus{
+        ON_SALE("在线",1);
+        private String value;
+        private int status;
+
+
+
+        ProductStatus(String value,int status){
+            this.status = status;
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
     }
 }

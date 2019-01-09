@@ -145,4 +145,37 @@
     </where>
     
   </select>
+
+  <select id="selectProductByKeywordAndCategoryId" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product
+    <where>
+      <if test="categoryId != null" >
+        and id = #{id}
+      </if>
+      <if test="keyword != null" >
+        and name like #{name}
+      </if>
+    </where>
+  </select>
+
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List"/>
+    from t_product
+    where status = 1
+      <if test="categoryIds != null" >
+        and category_id in
+        <foreach collection="categoryIds" item="categoryId" separator="," open="(" close=")">
+          #{categoryId}
+        </foreach>
+      </if>
+      <if test="keyword != null" >
+        and name like #{keyword}
+      </if>
+
+
+  </select>
 </mapper>

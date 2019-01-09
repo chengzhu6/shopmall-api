@@ -5,6 +5,7 @@ import com.castellan.common.ServerResponse;
 import com.castellan.dao.CategoryMapper;
 import com.castellan.pojo.Category;
 import com.castellan.service.ICategoryService;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,17 +84,17 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
 
-    public ServerResponse getChildernCategoryById(int categoryId){
+    public ServerResponse<List<Integer>> getChildernCategoryById(int categoryId){
         List<Category> categories = new ArrayList<>();
         getChildrenCategory(categories,categoryId);
 
 
-        Set<Integer> integerSet = Sets.newHashSet();
+        List<Integer> integerList = Lists.newArrayList(categories.size());
         Iterator<Category> iterator = categories.iterator();
         while (iterator.hasNext()){
-            integerSet.add(iterator.next().getId());
+            integerList.add(iterator.next().getId());
         }
-        return ServerResponse.createBySuccess(integerSet);
+        return ServerResponse.createBySuccess(integerList);
     }
 
     private List<Category>  getChildrenCategory(List<Category> categories,int categoryId){
