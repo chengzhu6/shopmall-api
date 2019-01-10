@@ -16,6 +16,82 @@
       <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, user_id, product_id, quantity, checked, create_time, update_time
+  </sql>
+
+  <insert id="insertSelective" parameterType="com.castellan.pojo.Cart" >
+    insert into t_cart
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="quantity != null" >
+        quantity,
+      </if>
+      <if test="checked != null" >
+        checked,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="checked != null" >
+        #{checked,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        now(),
+      </if>
+      <if test="updateTime != null" >
+        now(),
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.castellan.pojo.Cart" >
+    update t_cart
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="checked != null" >
+        checked = #{checked,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     <!--
       WARNING - @mbggenerated
@@ -67,4 +143,63 @@
     select id, user_id, product_id, quantity, checked, create_time, update_time
     from t_cart
   </select>
+  <select id="selectByUserIdProductId" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_cart
+    where product_id = #{productId}
+    and user_id = #{userId}
+  </select>
+
+  <select id="selectCardListByUserId" parameterType="integer" resultMap="BaseResultMap">
+
+    select
+    <include refid="Base_Column_List"/>
+    from t_cart
+    where user_id = #{userId}
+  </select>
+
+  <select id="selectAllCheckedByUserId" resultType="int" parameterType="integer">
+    select count(1)
+    from t_cart
+    where user_id = #{userId}
+    and checked = 0
+  </select>
+
+  <delete id="deleteByUserIdProductIds" parameterType="map">
+    delete
+    from t_cart
+    where user_id = #{userId}
+    <if test="productIds != null">
+      and product_id in
+      <foreach collection="productIds" item="productId" close=")" open="(" separator=",">
+        #{productId}
+      </foreach>
+    </if>
+  </delete>
+
+
+
+  <update id="updateCheckedByProductId" parameterType="map">
+    update t_cart
+    set checked = #{checked}
+    where user_id = #{userId}
+    <if test="productId != null">
+      and product_id = #{productId}
+    </if>
+  </update>
+
+  <select id="selectProductNumByUserId" resultType="int" parameterType="integer">
+    select IFNULL(sum(quantity),0)
+    from t_cart
+    where user_id = #{userId}
+  </select>
+
+
+
+
+
+
+
+
 </mapper>

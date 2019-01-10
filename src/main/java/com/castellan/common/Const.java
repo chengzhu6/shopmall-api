@@ -20,6 +20,13 @@ public class Const {
         Integer ROLE_ADMIN = 0;
     }
 
+    public interface Cart{
+        Integer CHECKED = 1;
+        Integer UNCHECKED = 0;
+        String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
+        String LIMIT_NUM_FAIl = "LIMIT_NUM_FAIL";
+    }
+
     public interface ProductListOrderBy{
         Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc","price_asc");
     }

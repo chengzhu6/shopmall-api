@@ -169,10 +169,7 @@ public class ProductManageController {
         }
     }
 
-    @RequestMapping("upload")
-    public String uploadHtml(){
-        return "upload";
-    }
+
 
 
 
