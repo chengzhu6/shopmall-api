@@ -12,6 +12,15 @@ public class Const {
 
     public static final String TYPE_EMAIL = "email";
 
+    public interface CookieUtil{
+        String TOKEN = "token";
+        int MAX_AGE = 180000;
+    }
+
+    public interface FilterConst{
+        String[] NEED_LOGIN_PATH = {"/user/get_user_info.do","/cart/**"};
+    }
+
     public static final Integer ROOT_NODE = new Integer(0);
 
 

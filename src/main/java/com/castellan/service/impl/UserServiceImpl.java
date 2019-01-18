@@ -35,7 +35,10 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("密码错误!");
         }
 
+        // 将登录的token保存到数据库中
+        userMapper.updateTokenByUserId(MD5Util.getMD5(user.getUsername() + user.getPassword()), user.getId());
         user.setPassword(null);
+
 
         return ServerResponse.createBySuccess(user,"登录成功！");
     }

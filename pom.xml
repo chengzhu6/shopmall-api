@@ -255,21 +255,20 @@
     </dependencies>
 
     <build>
-        <!--<resources>
+        <resources>
+
             <resource>
-                <directory>${project.basedir}/src/main/resources/lib</directory>
-                <targetPath>BOOT-INF/lib/</targetPath>
-                <includes>
-                    <include>**/*.jar</include>
-                </includes>
+                <directory>src/main/resources.${deploy.type}</directory>
+                <excludes>
+                    <exclude>static/*.html</exclude>
+                </excludes>
             </resource>
-        </resources>-->
-
-
-
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
 
         <plugins>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -312,9 +311,31 @@
                     <overwrite>true</overwrite>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <deploy.type>dev</deploy.type>
+            </properties>
+        </profile>
+
+        <profile>
+        <id>pro</id>
+        <properties>
+            <deploy.type>pro</deploy.type>
+        </properties>
+    </profile>
+        <profile>
+            <id>beta</id>
+            <properties>
+                <deploy.type>beta</deploy.type>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

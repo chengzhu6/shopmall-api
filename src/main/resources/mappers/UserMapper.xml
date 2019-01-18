@@ -243,4 +243,18 @@
         and email = #{email}
     </select>
 
+    <select id="selectUserByToken" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List"></include>
+        from t_user
+        where token = #{token}
+    </select>
+
+    <update id="updateTokenByUserId" parameterType="map">
+        update t_user
+        set token = #{token}
+        where id = #{id}
+
+    </update>
+
 </mapper>

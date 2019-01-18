@@ -44,6 +44,22 @@ public class PropertiesUtil {
         return value.trim();
     }
 
+    public static Integer getIntegerProperty(String key){
+        String value = props.getProperty(key.trim());
+        if(StringUtils.isBlank(value)){
+            return null;
+        }
+        return Integer.parseInt(value.trim());
+    }
+
+    public static Boolean getBooleanProperty(String key){
+        String value = props.getProperty(key.trim());
+        if(StringUtils.isBlank(value)){
+            return null;
+        }
+        return Boolean.parseBoolean(value.trim());
+    }
+
 
 
 }

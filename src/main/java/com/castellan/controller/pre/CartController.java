@@ -25,9 +25,6 @@ public class CartController {
     @ResponseBody
     public ServerResponse cartList(HttpSession session, Integer productId, int count){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
         return iCartService.addCartItem(currentUser.getId(),productId,count);
     }
 

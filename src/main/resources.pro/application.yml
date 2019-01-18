@@ -1,0 +1,30 @@
+# pro
+# 数据库jar包及配置
+db:
+  mysql:
+    location: Z:/maven/LocalWareHouse/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar
+
+# 数据库连接池配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+     username: root
+     password: mysql241541
+     driver-class-name: com.mysql.cj.jdbc.Driver
+     url: jdbc:mysql://127.0.0.1:3306/shopmall?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+     max-active: 20
+     max-wait: 6000
+     min-idle: 1
+     test-on-borrow: true
+     test-on-return: true
+
+
+
+
+
+
+
+mybatis:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  type-aliases-package: com.castellan.dao

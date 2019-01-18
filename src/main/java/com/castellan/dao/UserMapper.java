@@ -97,5 +97,9 @@ public interface UserMapper {
 
     int checkEmailByUserId(@Param("id") Integer id,@Param("email") String email);
 
+    User selectUserByToken(String token);
+
+    int updateTokenByUserId(@Param("token") String token, @Param("id") Integer id);
+
 
 }

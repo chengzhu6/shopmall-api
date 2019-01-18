@@ -1,6 +1,7 @@
 package com.castellan.service.impl;
 
 import com.castellan.common.Const;
+import com.castellan.common.RedisPool;
 import com.castellan.common.ResponseCode;
 import com.castellan.common.ServerResponse;
 import com.castellan.dao.CategoryMapper;
@@ -9,6 +10,7 @@ import com.castellan.pojo.Category;
 import com.castellan.pojo.Product;
 import com.castellan.service.ICategoryService;
 import com.castellan.service.IProductService;
+import com.castellan.util.JsonUtil;
 import com.castellan.vo.ProductDetailVo;
 import com.castellan.vo.ProductListVo;
 import com.github.pagehelper.PageHelper;
@@ -19,9 +21,14 @@ import org.apache.commons.lang.StringUtils;
 
 import com.castellan.util.PropertiesUtil;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -102,14 +109,32 @@ public class ProductServiceImpl implements IProductService {
 
 
     public ServerResponse getProductList(int pageNum,int pageSize){
-        PageHelper.startPage(pageNum,pageSize);
-        List<Product> products = productMapper.selectAll();
+        // 首先从redis中查看有没有数据
+        Jedis jedis = RedisPool.getJedis();
+        List<Product> products = Lists.newArrayList();
+        String productsJson = jedis.get("products");
+        if (productsJson == null){
+            // 从数据库中查询数据
+            PageHelper.startPage(pageNum,pageSize);
+            products = productMapper.selectAll();
+
+            productsJson = JsonUtil.serialize(products);
+            jedis.set("products", productsJson);
+        } else {
+            try {
+                products = JsonUtil.deserialize(productsJson, products.getClass(), Product.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         List<ProductListVo> productListVos = new ArrayList<>(products.size());
         for (Product productItem: products) {
             productListVos.add(assembleProductListVo(productItem));
         }
+
         PageInfo pageInfo = new PageInfo(products);
         pageInfo.setList(productListVos);
+
 
         return ServerResponse.createBySuccess(pageInfo);
 
@@ -183,7 +208,25 @@ public class ProductServiceImpl implements IProductService {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_PARAMETER.getCode(),ResponseCode.ILLEGAL_PARAMETER.getDesc());
         }
 
-        Product product = productMapper.selectByPrimaryKey(productId);
+
+        // 首先从redis中获取信息
+        Jedis jedis = RedisPool.getJedis();
+        Product product = null;
+
+        String productJson = jedis.get("product:" + productId);
+        if (productJson == null){
+            // 从数据库中拿到数据，并且加到redis中
+            product = productMapper.selectByPrimaryKey(productId);
+            productJson = JsonUtil.serialize(product);
+            jedis.set("product:" + productId, productJson);
+            jedis.close();
+        } else {
+            // 将redis中的数据反序列化
+            product = JsonUtil.deserialize(productJson, Product.class);
+        }
+
+
+
         if (product == null){
             return ServerResponse.createByErrorMessage("商品已下架或删除");
         }

@@ -31,5 +31,15 @@ public class ProductController {
         return iProductService.getProductsByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
     }
 
+    @RequestMapping("all.do")
+    @ResponseBody
+    public ServerResponse getALlList(@RequestParam(value = "keyword",required = false) String keyword,
+                                  @RequestParam(value = "categoryId",required = false)Integer categoryId,
+                                  @RequestParam(value = "pageNum",defaultValue = "0" )int pageNum,
+                                  @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
+                                  @RequestParam(value = "orderBy",required = false)String orderBy){
+        return iProductService.getProductList(pageNum,pageSize);
+    }
+
 
 }

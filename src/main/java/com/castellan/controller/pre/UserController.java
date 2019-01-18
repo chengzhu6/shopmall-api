@@ -6,10 +6,13 @@ import com.castellan.common.ResponseCode;
 import com.castellan.common.ServerResponse;
 import com.castellan.pojo.User;
 import com.castellan.service.IUserService;
+import com.castellan.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @RestController
@@ -22,10 +25,16 @@ public class UserController {
 
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> login( String username, String password, HttpSession session){
+    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse response){
 
         ServerResponse<User> serverResponse = iUserService.login(username,password);
         if(serverResponse.isSuccess()){
+            String token = MD5Util.getMD5(serverResponse.getData().getUsername()+serverResponse.getData().getPassword());
+            Cookie cookie = new Cookie("token",token);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(Const.CookieUtil.MAX_AGE);
+            response.addCookie(cookie);
             session.setAttribute(Const.CURRENT_USER,serverResponse.getData());
         }
         return serverResponse;
@@ -59,9 +68,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse<User> getUserInfo (HttpSession session){
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户信息");
-        }
         return ServerResponse.createBySuccess(user);
     }
 
