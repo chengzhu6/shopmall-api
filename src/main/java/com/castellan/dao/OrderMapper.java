@@ -57,6 +57,10 @@ public interface OrderMapper {
 
     List<Order> selectByUserId(Integer userId);
 
+    List<Order> selectOrderStatusByCreateTime(@Param("status") int status, @Param("createTime")String createTime);
+
+
+
 
 
 }

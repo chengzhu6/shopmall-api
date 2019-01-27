@@ -27,9 +27,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse add(HttpSession session, Shipping shipping){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iShippingService.addShipping(user.getId(),shipping);
     }
 
@@ -37,9 +35,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse del(HttpSession session, Integer shippingId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iShippingService.delShipping(user.getId(),shippingId);
     }
 
@@ -47,9 +43,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse update(HttpSession session, Shipping shipping){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iShippingService.updateShipping(user.getId(),shipping);
     }
 
@@ -57,9 +51,7 @@ public class ShippingController {
     @ResponseBody
     public ServerResponse detail(HttpSession session, Integer shippingId){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iShippingService.detailShipping(user.getId(),shippingId);
     }
 
@@ -69,9 +61,6 @@ public class ShippingController {
                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
         return iShippingService.listShipping(user.getId(),pageNum,pageSize);
     }
 }

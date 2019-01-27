@@ -56,4 +56,6 @@ public interface ProductMapper {
     List<Product> selectProductByKeywordAndCategoryId(@Param(value = "categoryId") Integer categoryId,@Param(value = "keyword") String keyword);
 
     List<Product> selectByNameAndCategoryIds(@Param(value = "keyword") String keyword,@Param("categoryIds") List<Integer> categoryIds);
+
+    Integer selectStockByProductId(Integer id);
 }

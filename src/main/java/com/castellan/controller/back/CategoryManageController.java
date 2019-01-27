@@ -33,15 +33,9 @@ public class CategoryManageController {
                                       String categoryName,
                                       @RequestParam(value = "parentId",defaultValue = "0") int parentId){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            // 管理员进行添加品类的操作
+        return iCategoryService.addCategory(categoryName,parentId);
 
-            return iCategoryService.addCategory(categoryName,parentId);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+
 
     }
 
@@ -50,41 +44,18 @@ public class CategoryManageController {
     @ResponseBody
     public ServerResponse resetCategoryName(HttpSession session, int categoryId, String categoryName){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            return iCategoryService.resetCategoryName(categoryName,categoryId);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
-
+        return iCategoryService.resetCategoryName(categoryName,categoryId);
     }
 
     @RequestMapping(value = "get_category.do")
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpSession session, @RequestParam(value = "categoryID",defaultValue = "0") int categoryId){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            return iCategoryService.getChildrenParallelCategory(categoryId);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
-
+        return iCategoryService.getChildrenParallelCategory(categoryId);
     }
 
     @RequestMapping(value = "get_deep_category.do")
     @ResponseBody
     public ServerResponse getChildrenDeepCategory(HttpSession session, @RequestParam(value = "categoryID",defaultValue = "0") int categoryId){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            return iCategoryService.getChildernCategoryById(categoryId);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
-
+        return iCategoryService.getChildernCategoryById(categoryId);
     }
 }

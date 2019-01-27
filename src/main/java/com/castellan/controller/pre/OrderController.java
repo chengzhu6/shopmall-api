@@ -39,9 +39,6 @@ public class OrderController {
     @ResponseBody
     public ServerResponse createOrder(HttpSession session, Integer shippingId){
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getDesc());
-        }
         return  iOrderService.createOrder(currentUser.getId(),shippingId);
     }
 
@@ -49,9 +46,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse cancel(HttpSession session, Long orderNo){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iOrderService.cancel(user.getId(),orderNo);
     }
 
@@ -59,9 +54,6 @@ public class OrderController {
     @ResponseBody
     public ServerResponse getOrderCartProduct(HttpSession session){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
         return iOrderService.getOrderCartProduct(user.getId());
     }
 
@@ -71,9 +63,7 @@ public class OrderController {
     @ResponseBody
     public ServerResponse detail(HttpSession session,Long orderNo){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
+
         return iOrderService.getOrderDetail(user.getId(),orderNo);
     }
 
@@ -81,9 +71,6 @@ public class OrderController {
     @ResponseBody
     public ServerResponse list(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
-        }
         return iOrderService.getOrderList(user.getId(),pageNum,pageSize);
     }
 

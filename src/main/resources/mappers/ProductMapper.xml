@@ -123,9 +123,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-
         update_time = now(),
-
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -177,5 +175,12 @@
       </if>
 
 
+  </select>
+
+
+  <select id="selectStockByProductId" parameterType="integer" resultType="integer">
+    select stock
+    from t_product
+    where id = #{id};
   </select>
 </mapper>

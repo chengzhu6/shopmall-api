@@ -33,9 +33,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse update(HttpSession session, Integer productId, int count){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.updateCart(productId,count,currentUser.getId());
     }
 
@@ -44,9 +42,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse update(HttpSession session, String productIds){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.deleteProduct(currentUser.getId(),productIds);
     }
 
@@ -55,9 +51,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse update(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.getCartList(currentUser.getId());
     }
 
@@ -65,9 +59,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse selectAll(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.selectOrUnselectProduct(currentUser.getId(),null,Const.Cart.CHECKED);
     }
 
@@ -75,9 +67,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse unSelectAll(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.selectOrUnselectProduct(currentUser.getId(),null,Const.Cart.UNCHECKED);
     }
 
@@ -85,9 +75,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse selectProduct(HttpSession session,Integer productId){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.selectOrUnselectProduct(currentUser.getId(),productId,Const.Cart.CHECKED);
     }
 
@@ -95,9 +83,7 @@ public class CartController {
     @ResponseBody
     public ServerResponse unSelectProduct(HttpSession session,Integer productId){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
+
         return iCartService.selectOrUnselectProduct(currentUser.getId(),productId,Const.Cart.UNCHECKED);
     }
 

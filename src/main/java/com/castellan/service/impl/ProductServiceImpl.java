@@ -109,33 +109,16 @@ public class ProductServiceImpl implements IProductService {
 
 
     public ServerResponse getProductList(int pageNum,int pageSize){
-        // 首先从redis中查看有没有数据
-        Jedis jedis = RedisPool.getJedis();
-        List<Product> products = Lists.newArrayList();
-        String productsJson = jedis.get("products");
-        if (productsJson == null){
-            // 从数据库中查询数据
-            PageHelper.startPage(pageNum,pageSize);
-            products = productMapper.selectAll();
 
-            productsJson = JsonUtil.serialize(products);
-            jedis.set("products", productsJson);
-        } else {
-            try {
-                products = JsonUtil.deserialize(productsJson, products.getClass(), Product.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        List<Product> products = Lists.newArrayList();
+        PageHelper.startPage(pageNum,pageSize);
+        products = productMapper.selectAll();
         List<ProductListVo> productListVos = new ArrayList<>(products.size());
         for (Product productItem: products) {
             productListVos.add(assembleProductListVo(productItem));
         }
-
         PageInfo pageInfo = new PageInfo(products);
         pageInfo.setList(productListVos);
-
-
         return ServerResponse.createBySuccess(pageInfo);
 
 
@@ -207,26 +190,8 @@ public class ProductServiceImpl implements IProductService {
         if (productId == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_PARAMETER.getCode(),ResponseCode.ILLEGAL_PARAMETER.getDesc());
         }
-
-
-        // 首先从redis中获取信息
-        Jedis jedis = RedisPool.getJedis();
         Product product = null;
-
-        String productJson = jedis.get("product:" + productId);
-        if (productJson == null){
-            // 从数据库中拿到数据，并且加到redis中
-            product = productMapper.selectByPrimaryKey(productId);
-            productJson = JsonUtil.serialize(product);
-            jedis.set("product:" + productId, productJson);
-            jedis.close();
-        } else {
-            // 将redis中的数据反序列化
-            product = JsonUtil.deserialize(productJson, Product.class);
-        }
-
-
-
+        product = productMapper.selectByPrimaryKey(productId);
         if (product == null){
             return ServerResponse.createByErrorMessage("商品已下架或删除");
         }

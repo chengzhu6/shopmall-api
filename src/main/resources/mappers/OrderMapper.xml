@@ -161,4 +161,18 @@
     from t_order
     where user_id = #{userId}
   </select>
+
+
+  <select id="selectOrderStatusByCreateTime" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from t_order
+    where status = #{status}
+    <![CDATA[
+    and create_time <= #{createTime}
+    ]]>
+    order by create_time desc
+  </select>
+
+
 </mapper>

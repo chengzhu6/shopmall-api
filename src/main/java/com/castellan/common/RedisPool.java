@@ -40,6 +40,7 @@ public class RedisPool {
         config.setTestOnReturn(testOnReturn);
         config.setBlockWhenExhausted(true);
 
+
         jedisPool = new JedisPool(config,redisIp,redisPort,1000*2);
     }
 
@@ -59,7 +60,7 @@ public class RedisPool {
 
     public static void main(String[] args) {
         Jedis jedis = RedisPool.getJedis();
-        jedis.set("aaa", "bbbb");
+        jedis.set("ab", "bbbccc");
         RedisPool.closeJedis(jedis);
     }
 

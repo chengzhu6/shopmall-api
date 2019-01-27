@@ -39,141 +39,80 @@ public class ProductManageController {
 
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse saveProduct(HttpSession session, Product product){
-
-
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            return iProductService.saveOrUpdateProduct(product);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse saveProduct(HttpSession session, Product product) {
+        return iProductService.saveOrUpdateProduct(product);
     }
 
 
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse setSaleStatus(HttpSession session, int productId ,int status){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            return iProductService.setSaleStatus(productId,status);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse setSaleStatus(HttpSession session, int productId, int status) {
+        return iProductService.setSaleStatus(productId, status);
     }
 
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session, int productId){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            //
-            return iProductService.getDetail(productId);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse getDetail(HttpSession session, int productId) {
+        return iProductService.getDetail(productId);
     }
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse getList(HttpSession session,
-                                  @RequestParam(value = "pageNum",defaultValue = "0") int pageNum,
-                                  @RequestParam(value = "pageSize",defaultValue = "10")int pageSize){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            //
-            return iProductService.getProductList(pageNum,pageSize);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse getList(@RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
+                                  @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        return iProductService.getProductList(pageNum, pageSize);
+
     }
 
 
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse searchProduct(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10")int pageSize, String productName, Integer productId){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            //
-            return iProductService.searchProduct(productName,productId,pageNum,pageSize);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse searchProduct(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize, String productName, Integer productId) {
+        return iProductService.searchProduct(productName, productId, pageNum, pageSize);
+
     }
 
 
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"当前用户未登录，请登录");
-        }
-        if(iUserService.checkAdminRole(currentUser.getRole()).isSuccess()){
-            String path = request.getSession().getServletContext().getRealPath("upload");
-            String targetFileName = iFileService.upload(file,path);
-            String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
-            Map fileMap = Maps.newHashMap();
-            fileMap.put("uri",targetFileName);
-            fileMap.put("url",url);
-            return ServerResponse.createBySuccess(fileMap);
-        }
-        return ServerResponse.createByErrorMessage("权限不足");
+    public ServerResponse upload(@RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request) {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file, path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
+        return ServerResponse.createBySuccess(fileMap);
     }
 
     @RequestMapping("richtext_img_upload.do")
     @ResponseBody
-    public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+    public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = Maps.newHashMap();
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) {
-            resultMap.put("success", false);
-            resultMap.put("msg", "请登录管理员");
-            return resultMap;
-        }
+
         //富文本中对于返回值有自己的要求,我们使用是simditor所以按照simditor的要求进行返回
 //        {
 //            "success": true/false,
 //                "msg": "error message", # optional
 //            "file_path": "[real file path]"
 //        }
-        if (iUserService.checkAdminRole(user.getRole()).isSuccess()) {
-            String path = request.getSession().getServletContext().getRealPath("upload");
-            String targetFileName = iFileService.upload(file, path);
-            if (StringUtils.isBlank(targetFileName)) {
-                resultMap.put("success", false);
-                resultMap.put("msg", "上传失败");
-                return resultMap;
-            }
-            String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
-            resultMap.put("success", true);
-            resultMap.put("msg", "上传成功");
-            resultMap.put("file_path", url);
-            response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
-            return resultMap;
-        } else {
+
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file, path);
+        if (StringUtils.isBlank(targetFileName)) {
             resultMap.put("success", false);
-            resultMap.put("msg", "无权限操作");
+            resultMap.put("msg", "上传失败");
             return resultMap;
         }
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+        resultMap.put("success", true);
+        resultMap.put("msg", "上传成功");
+        resultMap.put("file_path", url);
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
+        return resultMap;
+
     }
-
-
-
-
-
-
 
 
 }

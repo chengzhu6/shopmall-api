@@ -25,6 +25,10 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse login(String username, String password) {
+
+        int i = 0;
+        int j = 999;
+        j = j / i;
         int resultCount = userMapper.checkUsername(username);
         if(resultCount == 0){
             return ServerResponse.createByErrorMessage("用户名不存在！");
@@ -36,7 +40,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         // 将登录的token保存到数据库中
-        userMapper.updateTokenByUserId(MD5Util.getMD5(user.getUsername() + user.getPassword()), user.getId());
+        userMapper.updateTokenByUserId(MD5Util.getMD5(username+password),user.getId());
         user.setPassword(null);
 
 
@@ -164,6 +168,12 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErrorMessage("密码更新失败");
 
+    }
+
+
+    public User getUserByToken(String token){
+        User user = userMapper.selectUserByToken(token);
+        return user;
     }
 
     public ServerResponse updateInfomation(User user){

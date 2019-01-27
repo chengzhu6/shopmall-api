@@ -27,7 +27,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -40,6 +42,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service("iOrderService")
+@Slf4j
 public class OrderServiceImpl implements IOrderService {
 
     @Autowired
@@ -381,6 +384,35 @@ public class OrderServiceImpl implements IOrderService {
             orderItemList.add(orderItem);
         }
         return ServerResponse.createBySuccess(orderItemList);
+    }
+
+    public void closeOrder(int hour){
+
+        Date closeDateTime = DateUtils.addHours(new Date(),-hour);
+        List<Order> orderList = orderMapper.selectOrderStatusByCreateTime(Const.OrderStatus.NO_PAY.getStatus(),DateTimeUtil.dateToStr(closeDateTime));
+
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(order.getOrderNo());
+            for(OrderItem orderItem : orderItemList){
+
+                //一定要用主键where条件，防止锁表。同时必须是支持MySQL的InnoDB。
+                Integer stock = productMapper.selectStockByProductId(orderItem.getProductId());
+
+                //考虑到已生成的订单里的商品，被删除的情况
+                if(stock == null){
+                    continue;
+                }
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock+orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            order.setStatus(Const.OrderStatus.ORDER_CLOSE.getStatus());
+            order.setCloseTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+            log.info("关闭订单OrderNo：{}",order.getOrderNo());
+        }
+
     }
 
 

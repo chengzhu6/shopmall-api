@@ -27,9 +27,10 @@ public class UserController {
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse response){
 
+
         ServerResponse<User> serverResponse = iUserService.login(username,password);
         if(serverResponse.isSuccess()){
-            String token = MD5Util.getMD5(serverResponse.getData().getUsername()+serverResponse.getData().getPassword());
+            String token = MD5Util.getMD5(username + password);
             Cookie cookie = new Cookie("token",token);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
@@ -95,10 +96,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse resetPassword(HttpSession session,String passwordOld,String passwordNew){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorMessage("请登录");
-        }
-
         return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
 
@@ -107,9 +104,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse updateInformation(HttpSession session, User user){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorMessage("用户未登录，请先登录");
-        }
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
         ServerResponse serverResponse = iUserService.updateInfomation(user);
@@ -123,9 +117,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse getInfomation(HttpSession session){
         User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登录！");
-        }
         return iUserService.getInfomation(currentUser.getId());
 
     }

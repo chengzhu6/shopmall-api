@@ -28,4 +28,6 @@ public interface IUserService {
 
     ServerResponse checkAdminRole(Integer role);
 
+    User getUserByToken(String token);
+
 }
