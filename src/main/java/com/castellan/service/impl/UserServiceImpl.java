@@ -6,18 +6,22 @@ import com.castellan.common.TokenCache;
 import com.castellan.dao.UserMapper;
 import com.castellan.pojo.User;
 import com.castellan.service.IUserService;
+import com.castellan.util.DateTimeUtil;
 import com.castellan.util.MD5Util;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Service("iUserService")
+@Slf4j
 public class UserServiceImpl implements IUserService {
 
     @Autowired
@@ -25,25 +29,19 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse login(String username, String password) {
-
-        int i = 0;
-        int j = 999;
-        j = j / i;
+        log.info("startTime : {}", DateTimeUtil.dateToStr(new Date()));
         int resultCount = userMapper.checkUsername(username);
         if(resultCount == 0){
             return ServerResponse.createByErrorMessage("用户名不存在！");
         }
-
         User user = userMapper.selectLogin(username, MD5Util.getMD5(password));
         if(user == null){
             return ServerResponse.createByErrorMessage("密码错误!");
         }
-
         // 将登录的token保存到数据库中
         userMapper.updateTokenByUserId(MD5Util.getMD5(username+password),user.getId());
         user.setPassword(null);
-
-
+        log.info("endTime : {}", DateTimeUtil.dateToStr(new Date()));
         return ServerResponse.createBySuccess(user,"登录成功！");
     }
 

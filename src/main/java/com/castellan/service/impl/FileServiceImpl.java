@@ -18,6 +18,7 @@ public class FileServiceImpl implements IFileService {
         String fileName = file.getOriginalFilename();
 
 
+
         String fileExtensionName = fileName.substring(fileName.lastIndexOf(".")+1);
         String uploadFileName = UUID.randomUUID().toString()+"."+fileExtensionName;
 

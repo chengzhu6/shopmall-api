@@ -218,13 +218,13 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.1.2</version>
-            <scope>compile</scope>
+
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>1.1.2</version>
-            <scope>compile</scope>
+
         </dependency>
 
         <dependency>
@@ -255,22 +255,35 @@
         </dependency>
 
 
-
-
     </dependencies>
 
     <build>
         <resources>
-
             <resource>
                 <directory>src/main/resources.${deploy.type}</directory>
-                <excludes>
-                    <exclude>static/*.html</exclude>
-                </excludes>
+                <!--<targetPath>BOOT-INF/classes</targetPath>
+
+                <includes>
+                    <include>application.yml</include>
+                    <include>*.*</include>
+                </includes>-->
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
+                <!--<targetPath>BOOT-INF/classes</targetPath>
+                <excludes>
+                    <exclude>lib/*.jar</exclude>
+                </excludes>
+                <includes>
+                    <include>mappers/*.xml</include>
+                    <include>static/*.html</include>
+                </includes>-->
+
             </resource>
+            <!--<resource>
+                <directory>src/main/resources/lib</directory>
+                <targetPath>BOOT-INF/lib</targetPath>
+            </resource>-->
         </resources>
 
         <plugins>
@@ -330,11 +343,11 @@
         </profile>
 
         <profile>
-        <id>pro</id>
-        <properties>
-            <deploy.type>pro</deploy.type>
-        </properties>
-    </profile>
+            <id>pro</id>
+            <properties>
+                <deploy.type>pro</deploy.type>
+            </properties>
+        </profile>
         <profile>
             <id>beta</id>
             <properties>

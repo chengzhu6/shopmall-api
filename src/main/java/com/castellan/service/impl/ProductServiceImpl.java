@@ -198,6 +198,7 @@ public class ProductServiceImpl implements IProductService {
         if (product.getStatus() != Const.ProductStatus.ON_SALE.getStatus()){
             return ServerResponse.createByErrorMessage("商品已下架或删除");
         }
+
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
         return ServerResponse.createBySuccess(productDetailVo);
 

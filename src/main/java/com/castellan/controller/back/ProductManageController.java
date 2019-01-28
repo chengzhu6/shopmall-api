@@ -91,7 +91,7 @@ public class ProductManageController {
     public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         Map resultMap = Maps.newHashMap();
 
-        //富文本中对于返回值有自己的要求,我们使用是simditor所以按照simditor的要求进行返回
+
 //        {
 //            "success": true/false,
 //                "msg": "error message", # optional

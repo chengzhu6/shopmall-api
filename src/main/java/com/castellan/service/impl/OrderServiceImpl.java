@@ -574,9 +574,11 @@ public class OrderServiceImpl implements IOrderService {
         String tradeStatus = params.get("trade_status");
         Order order = orderMapper.selectByOrderNo(orderNo);
         if(order == null){
+            log.warn("订单{}无效，忽略回调");
             return ServerResponse.createByErrorMessage("无效的订单,回调忽略");
         }
         if(order.getStatus() >= Const.OrderStatus.PAID.getStatus()){
+            log.warn("订单 {}重复调用", orderNo);
             return ServerResponse.createBySuccess("支付宝重复调用");
         }
         if(Const.AliPayCallBack.TRADE_SUCCESS.equals(tradeStatus)){

@@ -28,6 +28,7 @@ public class WebAppConfigurer implements WebMvcConfigurer {
         excludes.add("/product/**");
         excludes.add("/user/login.do");
         excludes.add("/back/**");
+        excludes.add("/order/call_back.do");
         registry.addInterceptor(autoLoginFilter).addPathPatterns("/**").excludePathPatterns(excludes);
         registry.addInterceptor(roleCheckFilter).addPathPatterns("/back/**").excludePathPatterns("/back/login.do");
     }

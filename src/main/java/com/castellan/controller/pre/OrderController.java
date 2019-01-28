@@ -11,6 +11,7 @@ import com.castellan.pojo.User;
 import com.castellan.service.IOrderService;
 import com.castellan.service.impl.OrderServiceImpl;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,13 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/order/")
+@Slf4j
 public class OrderController {
 
     @Autowired
     private IOrderService iOrderService;
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+
 
 
     @RequestMapping("create.do")
@@ -77,33 +79,6 @@ public class OrderController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @RequestMapping("pay.do")
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
@@ -118,6 +93,7 @@ public class OrderController {
     @RequestMapping("call_back.do")
     @ResponseBody
     public Object callBack(HttpServletRequest request){
+        log.info("支付宝调用回调");
         Map<String,String> params = Maps.newHashMap();
 
         Map<String,String[]> parameterMap= request.getParameterMap();
@@ -137,7 +113,7 @@ public class OrderController {
                 return ServerResponse.createByErrorMessage("非法请求");
             }
         } catch (AlipayApiException e) {
-            logger.info("支付宝回调验签异常");
+            log.info("支付宝回调验签异常");
         }
         // 验证参数是否正确
         ServerResponse serverResponse = iOrderService.aliCallBack(params);
